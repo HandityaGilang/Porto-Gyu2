@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowRight, House } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 
 import ArtworkGrid from "@/components/ArtworkGrid";
@@ -21,6 +21,7 @@ export default function Portfolio() {
     () => (selectedType ? getArtworksByType(selectedType.id) : []),
     [selectedType],
   );
+  const closeLightbox = useCallback(() => setSelectedArtwork(null), []);
 
   return (
     <PageTransition>
@@ -107,7 +108,7 @@ export default function Portfolio() {
           )}
         </div>
 
-        <ImageLightbox artwork={selectedArtwork} onClose={() => setSelectedArtwork(null)} />
+        <ImageLightbox artwork={selectedArtwork} onClose={closeLightbox} />
       </main>
     </PageTransition>
   );

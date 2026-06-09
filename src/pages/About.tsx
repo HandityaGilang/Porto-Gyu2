@@ -89,9 +89,9 @@ export default function About() {
                   );
 
                   return isInternal ? (
-                    <a key={social.label} href={social.href}>
+                    <Link key={social.label} to={social.href}>
                       {content}
-                    </a>
+                    </Link>
                   ) : (
                     <a key={social.label} href={social.href} target="_blank" rel="noreferrer">
                       {content}

@@ -1,6 +1,6 @@
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowLeft, ArrowRight } from "lucide-react";
-import { useRef } from "react";
+import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
+import { useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { artTypes, type ArtTypeId } from "@/data/artTypes";
@@ -14,12 +14,55 @@ export default function PortfolioTypeCarousel({ selectedTypeId }: PortfolioTypeC
   const navigate = useNavigate();
   const reduceMotion = useReducedMotion();
   const scrollerRef = useRef<HTMLDivElement | null>(null);
+  const isDragging = useRef(false);
+  const didDrag = useRef(false);
+  const startX = useRef(0);
+  const startScroll = useRef(0);
 
   const moveCards = (direction: "prev" | "next") => {
     const step = scrollerRef.current ? Math.max(180, Math.round(scrollerRef.current.offsetWidth * 0.68)) : 220;
     const offset = direction === "next" ? step : -step;
     scrollerRef.current?.scrollBy({ left: offset, behavior: "smooth" });
   };
+
+  const onPointerDown = useCallback((e: React.PointerEvent) => {
+    didDrag.current = false;
+    if (e.pointerType !== "mouse") return;
+    const el = scrollerRef.current;
+    if (!el) return;
+    isDragging.current = true;
+    startX.current = e.clientX;
+    startScroll.current = el.scrollLeft;
+  }, []);
+
+  const onPointerMove = useCallback((e: React.PointerEvent) => {
+    if (!isDragging.current || !scrollerRef.current) return;
+    const dx = e.clientX - startX.current;
+    if (Math.abs(dx) > 5) {
+      didDrag.current = true;
+      const el = scrollerRef.current;
+      if (!el.hasPointerCapture(e.pointerId)) {
+        el.setPointerCapture(e.pointerId);
+        el.style.scrollSnapType = "none";
+        el.style.scrollBehavior = "auto";
+      }
+    }
+    if (didDrag.current) {
+      scrollerRef.current.scrollLeft = startScroll.current - dx;
+    }
+  }, []);
+
+  const onPointerUp = useCallback((e: React.PointerEvent) => {
+    if (!isDragging.current) return;
+    isDragging.current = false;
+    const el = scrollerRef.current;
+    if (!el) return;
+    if (el.hasPointerCapture(e.pointerId)) {
+      el.releasePointerCapture(e.pointerId);
+    }
+    el.style.scrollSnapType = "";
+    el.style.scrollBehavior = "";
+  }, []);
 
   return (
     <div>
@@ -44,9 +87,12 @@ export default function PortfolioTypeCarousel({ selectedTypeId }: PortfolioTypeC
 
       <div
         ref={scrollerRef}
-        className="overflow-x-auto scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+        className="flex cursor-grab gap-4 overflow-x-auto overscroll-x-contain px-5 select-none snap-x snap-mandatory scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden active:cursor-grabbing sm:gap-5"
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerUp}
       >
-      <div className="flex snap-x snap-mandatory gap-4 py-2">
         {artTypes.map((artType, index) => {
           const selected = selectedTypeId === artType.id;
 
@@ -54,34 +100,56 @@ export default function PortfolioTypeCarousel({ selectedTypeId }: PortfolioTypeC
             <motion.button
               key={artType.id}
               type="button"
-              onClick={() => navigate(`/portfolio?type=${artType.id}`)}
+              onClick={() => {
+                if (didDrag.current) return;
+                navigate(`/portfolio?type=${artType.id}`);
+              }}
               className={cn(
-                "glass-panel relative flex min-h-[12.5rem] min-w-[72vw] shrink-0 snap-start flex-col justify-end overflow-hidden rounded-[1.6rem] p-3 text-left transition sm:min-w-[46vw] md:min-w-[18rem] md:rounded-[2rem]",
-                selected ? "border-accent-gold/60 shadow-card" : "hover:-translate-y-1.5",
+                "group relative min-w-[72vw] shrink-0 snap-center overflow-hidden rounded-[2.25rem] border border-white/90 bg-white/40 text-left shadow-card transition sm:min-w-[46vw]",
+                selected ? "border-accent-gold/70 shadow-[0_0_0_1px_rgba(223,164,85,0.22),var(--shadow-card)]" : "",
+                "hover:-translate-y-2",
+                index === 0
+                  ? "h-[24rem] sm:h-[29rem] lg:h-[33rem] lg:min-w-[20rem]"
+                  : "mt-5 h-[21rem] sm:mt-8 sm:h-[24rem] lg:h-[28rem] lg:min-w-[16.2rem]",
               )}
-              initial={reduceMotion ? false : { opacity: 0, y: 26 }}
-              animate={reduceMotion ? {} : { opacity: 1, y: 0 }}
-              transition={{ duration: reduceMotion ? 0 : 0.4, delay: 0.08 + index * 0.05 }}
+              initial={reduceMotion ? false : { opacity: 0, y: 48, rotate: index === 0 ? -5 : index % 2 === 0 ? -6 : 6, scale: 0.97 }}
+              animate={
+                reduceMotion
+                  ? { opacity: 1 }
+                  : { opacity: 1, y: 0, rotate: index === 0 ? -2.5 : index % 2 === 0 ? -3 : 3, scale: 1 }
+              }
+              transition={{
+                duration: reduceMotion ? 0 : 0.72,
+                delay: 0.18 + index * 0.1,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              whileHover={reduceMotion ? undefined : { y: index === 0 ? -10 : -8, rotate: 0, scale: 1.01 }}
+              whileTap={{ scale: 0.98 }}
             >
-              <div className="absolute inset-0">
-                <img src={artType.image} alt={artType.name} className="h-full w-full object-cover opacity-90" />
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[rgba(31,36,48,0.6)] via-[rgba(31,36,48,0.14)] to-white/20" />
+              <div className="pointer-events-none absolute inset-0">
+                <img src={artType.image} alt={artType.name} draggable={false} loading="lazy" className="h-full w-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[rgba(31,36,48,0.46)] via-transparent via-45% to-white/18" />
+                <div className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full border border-white/60 bg-white/35 text-white backdrop-blur-sm">
+                  <ArrowUpRight className="h-4 w-4" />
+                </div>
               </div>
 
-              <div className="relative rounded-[1.2rem] border border-white/40 bg-[rgba(250,248,245,0.82)] p-3 backdrop-blur-sm">
-                <div className="flex items-start justify-between gap-3">
+              <div className="absolute bottom-4 left-4 right-4">
+                <div className="flex items-center justify-between gap-3 rounded-full border border-white/80 bg-[rgba(245,243,239,0.9)] px-4 py-3 text-sm shadow-lg backdrop-blur-md">
                   <div className="min-w-0">
-                    <p className="truncate font-display text-xl text-text-main">{artType.name}</p>
+                    <p className="truncate font-medium text-text-main">{artType.name}</p>
+                    <p className="truncate text-xs text-text-muted">{artType.shortDescription}</p>
                   </div>
                   <span
                     className={cn(
-                      "mt-1 flex h-9 w-9 items-center justify-center rounded-full border transition",
+                      "inline-flex shrink-0 items-center gap-2 rounded-full border px-3 py-1 text-[0.7rem] uppercase tracking-[0.18em] transition",
                       selected
-                        ? "border-accent-gold/60 bg-accent-gold/15 text-accent-red"
-                        : "border-border-soft bg-white/70 text-text-main",
+                        ? "border-accent-gold/45 bg-accent-gold/12 text-text-main"
+                        : "border-accent-gold/30 bg-white/80 text-text-main",
                     )}
                   >
-                    <ArrowRight className="h-4 w-4" />
+                    <span className={cn("h-1.5 w-1.5 rounded-full", selected ? "bg-accent-gold" : "bg-accent-gold")} />
+                    View
                   </span>
                 </div>
               </div>
@@ -89,7 +157,6 @@ export default function PortfolioTypeCarousel({ selectedTypeId }: PortfolioTypeC
           );
         })}
       </div>
-    </div>
     </div>
   );
 }

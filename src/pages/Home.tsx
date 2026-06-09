@@ -17,9 +17,9 @@ export default function Home() {
   return (
     <PageTransition>
       <main className="relative">
-        <section className="relative overflow-hidden px-4 pb-14 pt-10 sm:px-6 lg:px-10 lg:pb-20">
+        <section className="relative px-4 pb-14 pt-10 sm:px-6 lg:px-10 lg:pb-20">
           <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[minmax(0,0.84fr)_minmax(0,1.16fr)]">
-            <div className="relative">
+            <div className="relative min-w-0">
               <OrnamentLayer className="-z-10" intensity="rich" />
 
               <motion.span
@@ -33,7 +33,7 @@ export default function Home() {
               </motion.span>
 
               <motion.h1
-                className="mt-8 max-w-xl font-display text-[clamp(3.3rem,8vw,6.6rem)] leading-[0.96] text-text-main"
+                className="mt-8 font-display text-[clamp(2.2rem,8vw,6.6rem)] leading-[0.96] text-text-main"
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
@@ -49,7 +49,7 @@ export default function Home() {
               />
 
               <motion.p
-                className="mt-7 max-w-lg text-lg leading-8 text-text-muted sm:text-xl"
+                className="mt-7 text-[0.95rem] leading-7 text-text-muted sm:text-lg sm:leading-8 lg:text-xl"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.62, delay: 0.44 }}
@@ -70,7 +70,7 @@ export default function Home() {
                   <span>View Works</span>
                   <ArrowRight className="h-4 w-4" />
                 </Link>
-                <p className="text-sm tracking-[0.28em] text-text-muted">Elegant commissions and curated studies</p>
+                <p className="text-xs tracking-[0.18em] text-text-muted sm:text-sm sm:tracking-[0.28em]">Elegant commissions and curated studies</p>
               </motion.div>
             </div>
 
@@ -78,7 +78,7 @@ export default function Home() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.7, delay: 0.26, ease: [0.22, 1, 0.36, 1] }}
-              className="relative"
+              className="relative min-w-0"
             >
               <HeroCardCarousel />
             </motion.div>
