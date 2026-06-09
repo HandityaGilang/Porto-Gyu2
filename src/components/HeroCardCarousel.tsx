@@ -1,6 +1,6 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { artTypes } from "@/data/artTypes";
@@ -9,35 +9,13 @@ import { cn } from "@/lib/utils";
 export default function HeroCardCarousel() {
   const navigate = useNavigate();
   const reduceMotion = useReducedMotion();
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const trackRef = useRef<HTMLDivElement | null>(null);
-  const [dragLimit, setDragLimit] = useState(0);
-  const [position, setPosition] = useState(0);
-
-  const clampPosition = useCallback((value: number, limit: number) => Math.min(0, Math.max(-limit, value)), []);
-
-  useEffect(() => {
-    const updateDragLimit = () => {
-      if (!containerRef.current || !trackRef.current) {
-        return;
-      }
-
-      const nextLimit = Math.max(0, trackRef.current.scrollWidth - containerRef.current.offsetWidth);
-      setDragLimit(nextLimit);
-      setPosition((currentPosition) => clampPosition(currentPosition, nextLimit));
-    };
-
-    updateDragLimit();
-    window.addEventListener("resize", updateDragLimit);
-
-    return () => window.removeEventListener("resize", updateDragLimit);
-  }, [clampPosition]);
+  const scrollerRef = useRef<HTMLDivElement | null>(null);
 
   const cards = useMemo(() => artTypes, []);
   const moveCards = (direction: "prev" | "next") => {
-    const step = containerRef.current ? Math.max(220, Math.round(containerRef.current.offsetWidth * 0.44)) : 260;
-    const offset = direction === "next" ? -step : step;
-    setPosition((currentPosition) => clampPosition(currentPosition + offset, dragLimit));
+    const step = scrollerRef.current ? Math.max(220, Math.round(scrollerRef.current.offsetWidth * 0.72)) : 260;
+    const offset = direction === "next" ? step : -step;
+    scrollerRef.current?.scrollBy({ left: offset, behavior: "smooth" });
   };
 
   return (
@@ -45,7 +23,7 @@ export default function HeroCardCarousel() {
       <div className="mb-4 flex items-center justify-between gap-4">
         <div className="max-w-sm">
           <p className="text-fine text-xs uppercase text-accent-gold">Selected Styles</p>
-          <p className="mt-2 text-sm leading-7 text-text-muted">Drag through the collection or use the arrows to move between portfolio categories.</p>
+          <p className="mt-2 text-sm leading-7 text-text-muted">Swipe on mobile or use the arrows to move between portfolio categories.</p>
         </div>
 
         <div className="hidden items-center gap-3 md:flex">
@@ -68,34 +46,31 @@ export default function HeroCardCarousel() {
         </div>
       </div>
 
-      <div ref={containerRef} className="overflow-hidden rounded-[2.5rem]">
-        <motion.div
-          ref={trackRef}
-          drag={reduceMotion ? false : "x"}
-          dragConstraints={{ left: -dragLimit, right: 0 }}
-          dragElastic={0.12}
-          animate={{ x: position }}
-          onDragEnd={(_, info) => setPosition((currentPosition) => clampPosition(currentPosition + info.offset.x, dragLimit))}
-          className="flex cursor-grab gap-4 px-1 py-5 active:cursor-grabbing sm:gap-5 lg:justify-start"
-        >
+      <div
+        ref={scrollerRef}
+        className="overflow-x-auto rounded-[2.5rem] scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+      >
+        <div className="flex snap-x snap-mandatory gap-4 px-1 py-5 sm:gap-5 lg:justify-start">
           {cards.map((artType, index) => (
             <motion.button
               key={artType.id}
               type="button"
               onClick={() => navigate(`/portfolio?type=${artType.id}`)}
               className={cn(
-                "group relative shrink-0 overflow-hidden rounded-[2.25rem] border border-white/90 bg-white/40 text-left shadow-card backdrop-blur-md transition",
+                "group relative min-w-[72vw] shrink-0 snap-start overflow-hidden rounded-[2.25rem] border border-white/90 bg-white/40 text-left shadow-card backdrop-blur-md transition sm:min-w-[46vw]",
                 "hover:-translate-y-2",
-                index === 0 ? "h-[30rem] w-[18rem] sm:h-[33rem] sm:w-[20rem]" : "mt-8 h-[24rem] w-[14.5rem] sm:h-[28rem] sm:w-[16.2rem]",
+                index === 0
+                  ? "h-[24rem] sm:h-[29rem] lg:h-[33rem] lg:min-w-[20rem]"
+                  : "mt-5 h-[21rem] sm:mt-8 sm:h-[24rem] lg:h-[28rem] lg:min-w-[16.2rem]",
               )}
-              initial={reduceMotion ? false : { opacity: 0, y: 88, rotate: index === 0 ? -8 : index % 2 === 0 ? -10 : 10, scale: 0.94 }}
+              initial={reduceMotion ? false : { opacity: 0, y: 48, rotate: index === 0 ? -5 : index % 2 === 0 ? -6 : 6, scale: 0.97 }}
               animate={
                 reduceMotion
                   ? { opacity: 1 }
                   : { opacity: 1, y: 0, rotate: index === 0 ? -2.5 : index % 2 === 0 ? -3 : 3, scale: 1 }
               }
               transition={{
-                duration: 0.86,
+                duration: reduceMotion ? 0 : 0.72,
                 delay: 0.18 + index * 0.1,
                 ease: [0.22, 1, 0.36, 1],
               }}
@@ -125,7 +100,7 @@ export default function HeroCardCarousel() {
               </div>
             </motion.button>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );
