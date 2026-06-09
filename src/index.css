@@ -1,0 +1,139 @@
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-main: #e6eaf4;
+    --bg-soft: #f5f3ef;
+    --card-bg: rgba(255, 255, 255, 0.72);
+    --text-main: #1f2430;
+    --text-muted: #6d7280;
+    --accent-red: #b9312b;
+    --accent-red-dark: #8f241f;
+    --accent-gold: #dfa455;
+    --border-soft: rgba(31, 36, 48, 0.12);
+    --shadow-soft: 0 24px 60px rgba(120, 128, 151, 0.16);
+    --shadow-card: 0 20px 40px rgba(102, 95, 90, 0.14);
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  * {
+    @apply border-transparent;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    min-width: 320px;
+    min-height: 100vh;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    line-height: 1.5;
+    color: var(--text-main);
+    background:
+      radial-gradient(circle at 12% 10%, rgba(245, 243, 239, 0.88), transparent 24%),
+      radial-gradient(circle at 84% 16%, rgba(245, 243, 239, 0.72), transparent 20%),
+      radial-gradient(circle at 50% 82%, rgba(245, 243, 239, 0.6), transparent 24%),
+      linear-gradient(180deg, #eef1f8 0%, #e6eaf4 46%, #e8edf5 74%, #f5f3ef 100%);
+    overflow-x: hidden;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  button {
+    font: inherit;
+  }
+
+  img {
+    display: block;
+    max-width: 100%;
+  }
+
+  ::selection {
+    background: rgba(185, 49, 43, 0.18);
+    color: var(--text-main);
+  }
+}
+
+@layer components {
+  .glass-panel {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(245, 243, 239, 0.58));
+    border: 1px solid var(--border-soft);
+    box-shadow:
+      0 24px 60px rgba(118, 125, 148, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(14px);
+  }
+
+  .ornament-ring {
+    border: 1px solid rgba(223, 164, 85, 0.34);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+  }
+
+  .ornament-star {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    transform: rotate(45deg);
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(223, 164, 85, 0.96) 0%, rgba(223, 164, 85, 0.18) 72%, transparent 74%);
+    opacity: 0.85;
+    filter: blur(0.1px);
+  }
+
+  .ornate-border {
+    position: relative;
+  }
+
+  .ornate-border::after {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border: 1px solid rgba(223, 164, 85, 0.24);
+    border-radius: inherit;
+    pointer-events: none;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: "Playfair Display", serif;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-fine {
+    letter-spacing: 0.18em;
+  }
+
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+}
+
+body::-webkit-scrollbar {
+  width: 11px;
+}
+
+body::-webkit-scrollbar-track {
+  background: rgba(245, 243, 239, 0.85);
+}
+
+body::-webkit-scrollbar-thumb {
+  background: rgba(31, 36, 48, 0.18);
+  border-radius: 999px;
+  border: 2px solid rgba(245, 243, 239, 0.9);
+}
