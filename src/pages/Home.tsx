@@ -6,14 +6,13 @@ import HeroCardCarousel from "@/components/HeroCardCarousel";
 import OrnamentLayer from "@/components/OrnamentLayer";
 import PageTransition from "@/components/PageTransition";
 import ShortcutCards from "@/components/ShortcutCards";
-import { siteSettings } from "@/data/siteSettings";
-
-const commissionTone =
-  siteSettings.commissionStatus === "open"
-    ? "border-accent-gold/40 bg-white/75 text-text-main"
-    : "border-accent-red/30 bg-white/75 text-accent-red";
 
 export default function Home() {
+  const isOpen = false; // Set to false to show as closed
+  const commissionTone = isOpen
+    ? "border-green-500/40 bg-green-500/10 text-green-600"
+    : "border-red-500/40 bg-red-500/10 text-red-600";
+
   return (
     <PageTransition>
       <main className="relative">
@@ -22,15 +21,17 @@ export default function Home() {
             <div className="relative min-w-0">
               <OrnamentLayer className="-z-10" intensity="rich" />
 
-              <motion.span
-                className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium shadow-sm backdrop-blur-sm ${commissionTone}`}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.55, delay: 0.2 }}
-              >
-                <BadgeCheck className="h-4 w-4 text-accent-gold" />
-                Commission: {siteSettings.commissionStatus === "open" ? "Open" : "Closed"}
-              </motion.span>
+              <div className="flex flex-col gap-2 items-start">
+                <motion.span
+                  className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium shadow-sm backdrop-blur-sm ${commissionTone}`}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.55, delay: 0.2 }}
+                >
+                  <BadgeCheck className={`h-4 w-4 ${isOpen ? "text-green-600" : "text-red-600"}`} />
+                  Commission: {isOpen ? "Open" : "Closed"}
+                </motion.span>
+              </div>
 
               <motion.h1
                 className="mt-8 font-display text-[clamp(2.2rem,8vw,6.6rem)] leading-[0.96] text-text-main"
@@ -38,7 +39,7 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
               >
-                Art that speaks in color
+                52hertz
               </motion.h1>
 
               <motion.div
@@ -54,23 +55,35 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.62, delay: 0.44 }}
               >
-                A collection of commissioned works made with love and quiet inspiration.
+                Please read and respect the existing TOS
               </motion.p>
 
               <motion.div
-                className="mt-9 flex flex-wrap items-center gap-4"
+                className="mt-9 flex flex-col gap-4"
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.55, delay: 0.55 }}
               >
-                <Link
-                  to="/portfolio"
-                  className="inline-flex items-center gap-3 rounded-full bg-accent-red px-6 py-4 text-sm font-semibold text-white shadow-lg shadow-accent-red/25 transition hover:-translate-y-0.5 hover:bg-accent-red-dark"
-                >
-                  <span>View Works</span>
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-                <p className="text-xs tracking-[0.18em] text-text-muted sm:text-sm sm:tracking-[0.28em]">Elegant commissions and curated studies</p>
+                <div className="flex flex-wrap items-center gap-4">
+                  <Link
+                    to="/portfolio"
+                    className="inline-flex items-center gap-3 rounded-full bg-accent-red px-6 py-4 text-sm font-semibold text-white shadow-lg shadow-accent-red/25 transition hover:-translate-y-0.5 hover:bg-accent-red-dark"
+                  >
+                    <span>View Works</span>
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                  <p className="text-xs tracking-[0.18em] text-text-muted sm:text-sm sm:tracking-[0.28em]">Check my art here</p>
+                </div>
+                
+                <div className="flex flex-wrap items-center gap-4">
+                  <Link
+                    to="/tos#contact"
+                    className="inline-flex items-center gap-3 rounded-full border border-accent-gold/40 bg-white/60 px-6 py-4 text-sm font-semibold text-accent-red shadow-sm backdrop-blur-sm transition hover:-translate-y-0.5 hover:bg-white/90"
+                  >
+                    <span>Contact Me Now</span>
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </div>
               </motion.div>
             </div>
 

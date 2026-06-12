@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 const shortcuts = [
   {
     title: "ToS",
-    description: "Review payment flow, usage rights, and revision policy.",
+    description: "Payment flow, usage rights, and revision policy.",
     to: "/tos",
     icon: FileText,
     shape: "rounded-[3.1rem_1.6rem_3rem_1.8rem]",
@@ -15,7 +15,7 @@ const shortcuts = [
   },
   {
     title: "About",
-    description: "Meet the artist, the process, and the quiet intent behind the work.",
+    description: "About me and how to contact",
     to: "/about",
     icon: UserRound,
     shape: "rounded-[1.8rem_3rem_1.8rem_3.2rem]",
@@ -23,7 +23,7 @@ const shortcuts = [
   },
   {
     title: "Commission Portfolio",
-    description: "Jump straight into artworks by type and explore finished samples.",
+    description: "explore finished samples.",
     to: "/portfolio",
     icon: GalleryVerticalEnd,
     shape: "rounded-[3rem_1.9rem_2.4rem_3rem]",

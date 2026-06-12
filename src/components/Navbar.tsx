@@ -22,8 +22,8 @@ export default function Navbar() {
     <header className="sticky top-0 z-40 px-4 pb-3 pt-4 sm:px-6 lg:px-10">
       <div className="glass-panel mx-auto flex max-w-7xl items-center justify-between rounded-full px-5 py-3 sm:px-7">
         <NavLink to="/" className="flex items-center gap-3 text-text-main transition hover:text-accent-red">
-          <span className="flex h-10 w-10 items-center justify-center rounded-full border border-accent-gold/30 bg-white/50 text-accent-gold">
-            <Sparkles className="h-4 w-4" />
+          <span className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-accent-gold/30 bg-white/50 text-accent-gold">
+            <img src="/Logo.jpg" alt="Logo" className="h-full w-full object-cover" />
           </span>
           <span className="font-display text-2xl">52hertz</span>
         </NavLink>

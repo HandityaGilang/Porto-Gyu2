@@ -105,12 +105,9 @@ export default function PortfolioTypeCarousel({ selectedTypeId }: PortfolioTypeC
                 navigate(`/portfolio?type=${artType.id}`);
               }}
               className={cn(
-                "group relative min-w-[72vw] shrink-0 snap-center overflow-hidden rounded-[2.25rem] border border-white/90 bg-white/40 text-left shadow-card transition sm:min-w-[46vw]",
+                "group relative min-w-[72vw] shrink-0 snap-center overflow-hidden rounded-[2.25rem] border border-white/90 bg-white/40 text-left shadow-card sm:min-w-[46vw] will-change-transform",
                 selected ? "border-accent-gold/70 shadow-[0_0_0_1px_rgba(223,164,85,0.22),var(--shadow-card)]" : "",
-                "hover:-translate-y-2",
-                index === 0
-                  ? "h-[24rem] sm:h-[29rem] lg:h-[33rem] lg:min-w-[20rem]"
-                  : "mt-5 h-[21rem] sm:mt-8 sm:h-[24rem] lg:h-[28rem] lg:min-w-[16.2rem]",
+                "h-[24rem] sm:h-[29rem] lg:h-[32rem] lg:min-w-[19rem]",
               )}
               initial={reduceMotion ? false : { opacity: 0, y: 48, rotate: index === 0 ? -5 : index % 2 === 0 ? -6 : 6, scale: 0.97 }}
               animate={
@@ -119,11 +116,12 @@ export default function PortfolioTypeCarousel({ selectedTypeId }: PortfolioTypeC
                   : { opacity: 1, y: 0, rotate: index === 0 ? -2.5 : index % 2 === 0 ? -3 : 3, scale: 1 }
               }
               transition={{
-                duration: reduceMotion ? 0 : 0.72,
-                delay: 0.18 + index * 0.1,
-                ease: [0.22, 1, 0.36, 1],
+                type: "spring",
+                stiffness: 150,
+                damping: 18,
+                delay: 0.08 + index * 0.06,
               }}
-              whileHover={reduceMotion ? undefined : { y: index === 0 ? -10 : -8, rotate: 0, scale: 1.01 }}
+              whileHover={reduceMotion ? undefined : { scale: 1.04, rotate: 0 }}
               whileTap={{ scale: 0.98 }}
             >
               <div className="pointer-events-none absolute inset-0">
@@ -135,22 +133,11 @@ export default function PortfolioTypeCarousel({ selectedTypeId }: PortfolioTypeC
               </div>
 
               <div className="absolute bottom-4 left-4 right-4">
-                <div className="flex items-center justify-between gap-3 rounded-full border border-white/80 bg-[rgba(245,243,239,0.9)] px-4 py-3 text-sm shadow-lg backdrop-blur-md">
+                <div className="flex items-center justify-between gap-3 rounded-full border border-white/80 bg-[rgba(245,243,239,0.9)] px-5 py-3.5 shadow-lg backdrop-blur-md">
                   <div className="min-w-0">
-                    <p className="truncate font-medium text-text-main">{artType.name}</p>
-                    <p className="truncate text-xs text-text-muted">{artType.shortDescription}</p>
+                    <p className="font-display text-lg font-semibold text-text-main">{artType.name}</p>
+                    <p className="mt-0.5 text-xs font-medium text-accent-red">Start from ${artType.price}</p>
                   </div>
-                  <span
-                    className={cn(
-                      "inline-flex shrink-0 items-center gap-2 rounded-full border px-3 py-1 text-[0.7rem] uppercase tracking-[0.18em] transition",
-                      selected
-                        ? "border-accent-gold/45 bg-accent-gold/12 text-text-main"
-                        : "border-accent-gold/30 bg-white/80 text-text-main",
-                    )}
-                  >
-                    <span className={cn("h-1.5 w-1.5 rounded-full", selected ? "bg-accent-gold" : "bg-accent-gold")} />
-                    View
-                  </span>
                 </div>
               </div>
             </motion.button>

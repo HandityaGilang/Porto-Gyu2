@@ -2,7 +2,6 @@ import { AnimatePresence } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 import { BrowserRouter, Link, Route, Routes, useLocation } from "react-router-dom";
 
-import IntroAnimation from "@/components/IntroAnimation";
 import Navbar from "@/components/Navbar";
 import OrnamentLayer from "@/components/OrnamentLayer";
 import PageTransition from "@/components/PageTransition";
@@ -33,7 +32,6 @@ function NotFound() {
 
 function AppLayout() {
   const location = useLocation();
-  const [showIntro, setShowIntro] = useState(true);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -61,8 +59,6 @@ function AppLayout() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AnimatePresence>
-
-      <IntroAnimation show={showIntro} onComplete={() => setShowIntro(false)} />
     </div>
   );
 }

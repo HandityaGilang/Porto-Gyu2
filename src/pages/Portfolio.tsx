@@ -10,17 +10,20 @@ import OrnamentLayer from "@/components/OrnamentLayer";
 import PageTransition from "@/components/PageTransition";
 import PortfolioTypeCarousel from "@/components/PortfolioTypeCarousel";
 import type { Artwork } from "@/data/artworks";
-import { getArtworksByType, getSelectedArtType } from "@/utils/portfolio";
+import { artworks } from "@/data/artworks";
+import { getSelectedArtType } from "@/utils/portfolio";
 
 export default function Portfolio() {
   const [searchParams] = useSearchParams();
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
 
   const selectedType = useMemo(() => getSelectedArtType(searchParams.get("type")), [searchParams]);
-  const filteredArtworks = useMemo(
-    () => (selectedType ? getArtworksByType(selectedType.id) : []),
-    [selectedType],
-  );
+  
+  const filteredArtworks = useMemo(() => {
+    if (!selectedType) return artworks;
+    return artworks.filter(art => art.type === selectedType.id);
+  }, [selectedType]);
+  
   const closeLightbox = useCallback(() => setSelectedArtwork(null), []);
 
   return (
@@ -83,7 +86,14 @@ export default function Portfolio() {
               </div>
 
               <PortfolioTypeCarousel selectedTypeId={selectedType.id} />
-              <ArtworkGrid artworks={filteredArtworks} onSelect={setSelectedArtwork} />
+              
+              {filteredArtworks.length === 0 ? (
+                <div className="rounded-[1.5rem] border border-border-soft bg-white/20 py-16 text-center text-text-muted">
+                  <p className="text-sm">No artworks published under this category yet.</p>
+                </div>
+              ) : (
+                <ArtworkGrid artworks={filteredArtworks} onSelect={setSelectedArtwork} />
+              )}
 
               <motion.div
                 className="glass-panel rounded-[2.25rem] border border-white/65 px-6 py-8 sm:px-8 lg:flex lg:items-center lg:justify-between"
